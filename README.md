@@ -2,20 +2,22 @@
 
 **Status: v0.1b — bootstrap / feasibility stage**
 
-Citra360 is an experimental research project exploring whether parts of the Nintendo 3DS emulator Citra can be adapted for the Xbox 360 (RGH/JTAG). This repository is currently a project scaffold, not a working 3DS emulator.
+Citra360 is an experimental research project exploring whether parts of the Nintendo 3DS emulator Citra can be adapted for the Xbox 360 (RGH/JTAG). This repository is an early scaffold, **not a working 3DS emulator**.
 
-## Current scope
+## Implemented scaffold
 
-- Establish a small, testable C++ bootstrap.
-- Keep platform-independent code separate from Xbox 360-specific code.
-- Audit CPU, memory, graphics, audio, and system-service dependencies before attempting a port.
-- Investigate a Xenon/PowerPC toolchain and XEX packaging only after the target environment is verified.
+- `CMakeLists.txt`: C++17 host build and CTest registration.
+- `src/main.cpp`: project/version banner and a minimal bootstrap self-test.
+- `.github/workflows/host-smoke-test.yml`: GitHub Actions workflow to configure, build, and run the host-side smoke test.
+
+These files have been committed, but the workflow result has not yet been verified. The self-test checks only the bootstrap; it does not test emulation or Xbox 360 compatibility.
 
 ## Honest status
 
 | Area | Status |
 |---|---|
-| Project documentation and scaffold | In progress |
+| Initial C++ bootstrap | Implemented; build not yet verified here |
+| Host CI workflow | Added; successful run not yet verified |
 | Citra source/dependency audit | Not started |
 | Xenon cross-compiler verified | Not verified |
 | ARM11 emulation integrated | Not implemented |
@@ -27,23 +29,25 @@ Citra360 is an experimental research project exploring whether parts of the Nint
 
 Percentages should only be raised when backed by code, reproducible builds, or tests. A host-side smoke test does **not** prove Xbox 360 compatibility.
 
-## Build the bootstrap on a host
+## Host build and test
 
-A normal CMake compiler can build the initial bootstrap for development and CI. This is only a host-side check:
+Requires CMake and a C++17 compiler:
 
 ```sh
-cmake -S . -B build
-cmake --build build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel 2
+ctest --test-dir build --output-on-failure
 ./build/citra360_bootstrap
 ```
 
 ## Planned milestones
 
-1. **v0.1b:** establish the repository scaffold and a host-side smoke test.
-2. Audit the chosen Citra source revision, license obligations, dependencies, and platform assumptions.
-3. Validate the Xbox 360 toolchain and a minimal Xenon executable independently.
+1. **v0.1b:** bootstrap and reproducible host smoke test.
+2. Audit the selected Citra source revision, license obligations, dependencies, and platform assumptions.
+3. Validate the Xbox 360 Xenon/PowerPC toolchain and a minimal target executable independently.
 4. Design platform abstraction layers for logging, memory, input, timing, and graphics.
-5. Port and test emulator subsystems incrementally; do not claim a subsystem complete until tested.
+5. Port and test emulator subsystems incrementally.
+6. Only after target compilation is proven, investigate ELF/XEX packaging and runtime testing.
 
 ## Legal and attribution
 
