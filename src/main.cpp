@@ -1,3 +1,5 @@
+#include "citra360/arm11_core.hpp"
+
 #include <cstring>
 #include <iostream>
 #include <string_view>
@@ -7,8 +9,8 @@ constexpr std::string_view kProject = "Citra360";
 constexpr std::string_view kVersion = "0.1b";
 
 bool self_test() {
-    // Bootstrap-only checks. These do not test 3DS emulation or Xbox 360 hardware.
-    return !kProject.empty() && !kVersion.empty();
+    citra360::Arm11Core cpu;
+    return cpu.step(0xE3A00005U) && cpu.r[0] == 5U && cpu.r[15] == 4U;
 }
 }  // namespace
 
@@ -23,7 +25,8 @@ int main(int argc, char** argv) {
     }
 
     std::cout << kProject << " v" << kVersion << "\n";
-    std::cout << "Experimental port scaffold; no 3DS emulation is implemented yet.\n";
+    std::cout << "ARM-state prototype included: limited data-processing-immediate subset.\n";
+    std::cout << "Not a complete ARM11/ARMv6K implementation; no game execution claimed.\n";
     std::cout << "Target: Xbox 360 RGH (PowerPC Xenon) — toolchain not verified.\n";
     return 0;
 }
