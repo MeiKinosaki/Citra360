@@ -5,11 +5,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(citra360_bootstrap
-    src/main.cpp
+add_library(citra360_core
+    src/arm11_core.cpp
 )
+target_include_directories(citra360_core PUBLIC include)
 
-target_include_directories(citra360_bootstrap PRIVATE include)
+add_executable(citra360_bootstrap src/main.cpp)
+target_link_libraries(citra360_bootstrap PRIVATE citra360_core)
+
+add_executable(arm11_core_test tests/arm11_core_test.cpp)
+target_link_libraries(arm11_core_test PRIVATE citra360_core)
 
 enable_testing()
 add_test(NAME bootstrap_smoke_test COMMAND citra360_bootstrap --self-test)
+add_test(NAME arm11_prototype_test COMMAND arm11_core_test)
